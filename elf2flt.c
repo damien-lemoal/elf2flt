@@ -81,6 +81,8 @@ const char *elf2flt_progname;
 #include <elf/v850.h>
 #elif defined(TARGET_xtensa)
 #include <elf/xtensa.h>
+#elif defined(TARGET_riscv64)
+#include <elf/riscv.h>
 #endif
 
 #if defined(__MINGW32__)
@@ -123,6 +125,8 @@ const char *elf2flt_progname;
 #define ARCH	"nios2"
 #elif defined(TARGET_xtensa)
 #define ARCH	"xtensa"
+#elif defined(TARGET_riscv64)
+#define ARCH    "riscv64"
 #else
 #error "Don't know how to support your CPU architecture??"
 #endif
@@ -499,6 +503,15 @@ output_relocs (
 				continue;
 			}
 #endif /* USE_V850_RELOCS */
+
+#if defined(TARGET_riscv64)
+			switch ((*p)->howto->type) {
+			case R_RISCV_ADD32:
+			case R_RISCV_SUB32:
+			case R_RISCV_32_PCREL:
+			    continue;
+			}
+#endif
 
 			q = *p;
 			if (q->sym_ptr_ptr && *q->sym_ptr_ptr) {
